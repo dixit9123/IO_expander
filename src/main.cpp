@@ -7,8 +7,6 @@
 #include <Wire.h>
 #include "MCP23017.h"
 
-#endif
-
 //F5 for debug
 
 #define MCP23017_I2C_ADDRESS 0x27  // I2C address of the MCP23017 IC
@@ -59,7 +57,7 @@ void setup() {
    // Reset MCP23017 ports
    mcp23017.writeRegister(MCP23017Register::GPIO_A, 0x00);
    mcp23017.writeRegister(MCP23017Register::GPIO_B, 0x00);
-   debug_init();
+   //debug_init();
 }
 void loop() {
   //mcp23017.clearInterrupts();
@@ -70,7 +68,7 @@ void loop() {
     uint8_t button = mcp23017.readRegister(MCP23017Register::INTF_B);
     if(button == 0x01)
     {
-      //Serial.print("Button1 Pressed\n");
+      Serial.print("Button1 Pressed\n");
     }
     else if(button == 0x02)
     {
@@ -145,3 +143,5 @@ void mcp23017ChangeDetectedOnPortB() {
     buttonPressed =true;
   }
 }
+
+#endif
