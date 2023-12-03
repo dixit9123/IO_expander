@@ -1,9 +1,8 @@
-#ifndef PLSWORK
-#define PLSWORK
-
 #include <Arduino.h>
+#ifdef AVR_DEBUG
 #include "avr8-stub.h"
-#include "app_api.h"
+#include "avr_debugger.h"
+#endif
 #include <Wire.h>
 #include "MCP23017.h"
 
@@ -47,6 +46,21 @@ void mcp23017ChangeDetectedOnPortB();
 void configurePinsWithPinMode();
 void configureInterrupts();
 
+/* Provide print functions that either use GDB or regular serial port transport */
+void print(const char* str) {
+#ifdef AVR_DEBUG
+  // We can still transport the message via debug messages
+  debug_message(str);
+#else
+  // Not in debug mode? Use regular print.
+  Serial.print(str);
+#endif
+}
+
+void print(String& str) {
+  print(str.c_str());
+}
+
 void setup() {
    //Serial.begin(9600);
    Wire.begin();     // initialize I2C serial bus
@@ -57,31 +71,34 @@ void setup() {
    // Reset MCP23017 ports
    mcp23017.writeRegister(MCP23017Register::GPIO_A, 0x00);
    mcp23017.writeRegister(MCP23017Register::GPIO_B, 0x00);
-   //debug_init();
+   // Activate debugging stack if we're in the uno_debug enviornment
+#ifdef AVR_DEBUG
+   debug_init();
+#endif
 }
 void loop() {
   //mcp23017.clearInterrupts();
-  //Serial.print("Port B is:" +mcp23017.readRegister(MCP23017Register::GPIO_B));
+  print(String("Port B is:") + mcp23017.readRegister(MCP23017Register::GPIO_B));
 
   if(buttonPressed ==true)
   {
     uint8_t button = mcp23017.readRegister(MCP23017Register::INTF_B);
     if(button == 0x01)
     {
-      Serial.print("Button1 Pressed\n");
+      print("Button1 Pressed\n");
     }
     else if(button == 0x02)
     {
-      //Serial.print("Button2 Pressed\n");
+      print("Button2 Pressed\n");
     }
     else if(button == 0x04)
     {
-      //Serial.print("Button3 Pressed\n");
+      print("Button3 Pressed\n");
     }
     buttonPressed= false;
   }
 
-  Serial.print("Port B is:" +mcp23017.readRegister(MCP23017Register::GPIO_B));
+  print("Port B is:" +mcp23017.readRegister(MCP23017Register::GPIO_B));
   mcp23017.clearInterrupts();
   delay(100);
 }
@@ -143,5 +160,3 @@ void mcp23017ChangeDetectedOnPortB() {
     buttonPressed =true;
   }
 }
-
-#endif
