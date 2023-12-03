@@ -16,6 +16,5 @@ def replace_node_with_another(env, node):
 
 env.AddBuildMiddleware(
     replace_node_with_another,
-    #"framework-arduino-avr/cores/arduino/WInterrupts.c"
     os.path.join(FRAMEWORK_DIR, "cores", "arduino", "WInterrupts.c")
 )
