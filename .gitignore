@@ -2,3 +2,7 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+.vscode/extensions.json
+.pio/
+# Don't push object files
+patched_arduino/*.o
