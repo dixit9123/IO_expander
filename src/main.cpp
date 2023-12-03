@@ -62,7 +62,9 @@ void print(String& str) {
 }
 
 void setup() {
-   //Serial.begin(9600);
+#ifndef AVR_DEBUG
+   Serial.begin(9600);
+#endif
    Wire.begin();     // initialize I2C serial bus
    mcp23017.init();  // initialize MCP23017 IC
    // Configure MCP23017 I/O pins
